@@ -1,0 +1,52 @@
+# Create/update root .gitignore
+cat > .gitignore << 'EOF'
+# Dependency directories
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env*
+!.env.example
+
+# Log files
+*.log
+npm-debug.log*
+
+# IDE/Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Vite cache
+.vite/
+.cache/
+
+# Blockchain specific
+artifacts/
+cache/
+typechain-types/
+deployments/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Debug
+debug/
+*.pem
+*.key
+EOF
