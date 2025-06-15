@@ -49,4 +49,6 @@ coverage/
 debug/
 *.pem
 *.key
-EOF
+EOF/frontend/node_modules
+/frontend/dist
+/frontend/.env
