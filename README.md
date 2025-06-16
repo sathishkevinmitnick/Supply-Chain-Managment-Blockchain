@@ -29,4 +29,4 @@ A decentralized supply chain management system leveraging blockchain technology 
 ## Project Structure 📂
 
 ![image alt](https://github.com/sathishkevinmitnick/Kevin-project/blob/a26156e7080aeaa015e83d3a9a012a3930a3eaa4/Screenshot%20(259).png)
-![image alt](https://github.com/sathishkevinmitnick/Kevin-project/blob/db7fd7958e5cf91d37712656c9e79f11a6ff7684/Screenshot%20(260).png)
+![image alt](https://github.com/sathishkevinmitnick/Supply-Chain-Managment-Blockchain/blob/41382f7b359e2266daf0ab729426ad5268266671/Screenshot%20(287).png)
