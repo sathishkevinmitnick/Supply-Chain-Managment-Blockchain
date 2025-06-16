@@ -2,7 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Optional: Custom global styles */
+:root {
+  color-scheme: light dark;
+}
+
+/* ✅ Define custom classes properly */
+@layer utilities {
+  .bg-background-light {
+    background-color: #f9fafb; /* Example: light gray */
+  }
+
+  .bg-background-dark {
+    background-color: #1f2937; /* Example: dark gray */
+  }
+
+  .text-text-light {
+    color: #1f2937; /* Example: dark text */
+  }
+
+  .text-text-dark {
+    color: #f9fafb; /* Example: light text */
+  }
+}
+
+/* ✅ Now you can use apply */
 body {
-  @apply font-sans;
+  @apply bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark;
 }

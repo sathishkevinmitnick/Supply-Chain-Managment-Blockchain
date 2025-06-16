@@ -8,8 +8,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import EscrowActions from './components/EscrowActions';
 import EscrowInterface from './components/EscrowInterface';
+import { useTheme } from './context/ThemeContext';
 
 export default function App() {
+  // Theme context
+  const { theme, toggleTheme } = useTheme();
+  
   // Form and application state
   const [formData, setFormData] = useState({
     productId: "",
@@ -375,12 +379,12 @@ export default function App() {
   const renderProductsTab = () => (
     <>
       <form onSubmit={handleAdd} className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-700'} mb-4`}>
           Add New Product
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
               Product ID
             </label>
             <input
@@ -389,12 +393,12 @@ export default function App() {
               placeholder="P1001"
               value={formData.productId}
               onChange={handleInputChange}
-              className="border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500"
+              className={`border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
               Description
             </label>
             <input
@@ -403,12 +407,12 @@ export default function App() {
               placeholder="Organic Apples"
               value={formData.description}
               onChange={handleInputChange}
-              className="border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500"
+              className={`border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
               Owner
             </label>
             <input
@@ -417,7 +421,7 @@ export default function App() {
               placeholder="Sathish Kevin"
               value={formData.owner}
               onChange={handleInputChange}
-              className="border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500"
+              className={`border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
               required
             />
           </div>
@@ -447,7 +451,7 @@ export default function App() {
       </form>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
           Search Products
         </label>
         <input
@@ -455,25 +459,25 @@ export default function App() {
           placeholder="Search by ID, Description, or Owner..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-3 shadow-sm focus:ring-2 focus:ring-indigo-400"
+          className={`w-full border rounded-md p-3 shadow-sm focus:ring-2 focus:ring-indigo-400 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
         />
       </div>
 
       <section>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-700">
+          <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}>
             🔗 Blockchain Ledger
           </h2>
           <div className="flex gap-2">
             <button
               onClick={() => setShowQRCodes(!showQRCodes)}
-              className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+              className={`text-sm flex items-center gap-1 ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'}`}
             >
               {showQRCodes ? 'Hide QR Codes' : 'Show QR Codes'}
             </button>
             <button
               onClick={fetchChain}
-              className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+              className={`text-sm flex items-center gap-1 ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'}`}
               disabled={isLoading}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -489,38 +493,38 @@ export default function App() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
         ) : filteredChain.length === 0 ? (
-          <div className="bg-gray-50 p-8 rounded-lg text-center">
-            <p className="text-gray-500">
+          <div className={`p-8 rounded-lg text-center ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>
               {search ? "No matching products found" : "No products in the chain yet"}
             </p>
           </div>
         ) : (
-          <div className="bg-gray-50 p-4 rounded-lg shadow-inner max-h-96 overflow-y-auto text-sm space-y-4">
+          <div className={`p-4 rounded-lg shadow-inner max-h-96 overflow-y-auto text-sm space-y-4 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}`}>
             {filteredChain.map((block) => (
-              <div key={block.hash} className="p-4 border rounded-md bg-white shadow-sm">
+              <div key={block.hash} className={`p-4 border rounded-md shadow-sm ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white'}`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="font-medium text-gray-900">🔢 Block #{block.index}</p>
-                    <p className="text-gray-600"><span className="font-medium">🕒 Timestamp:</span> {new Date(block.timestamp).toLocaleString()}</p>
-                    <p className="text-gray-600"><span className="font-medium">📦 Product ID:</span> {block.data.productId}</p>
+                    <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>🔢 Block #{block.index}</p>
+                    <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}><span className="font-medium">🕒 Timestamp:</span> {new Date(block.timestamp).toLocaleString()}</p>
+                    <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}><span className="font-medium">📦 Product ID:</span> {block.data.productId}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600"><span className="font-medium">📝 Description:</span> {block.data.description}</p>
-                    <p className="text-gray-600"><span className="font-medium">👤 Owner:</span> {block.data.owner}</p>
+                    <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}><span className="font-medium">📝 Description:</span> {block.data.description}</p>
+                    <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}><span className="font-medium">👤 Owner:</span> {block.data.owner}</p>
                     {block.data.walletAddress && (
-                      <p className="text-gray-600 text-xs mt-1">
+                      <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                         <span className="font-medium">Wallet:</span> {`${block.data.walletAddress.slice(0, 6)}...${block.data.walletAddress.slice(-4)}`}
                       </p>
                     )}
                   </div>
                 </div>
-                <div className="mt-3 pt-3 border-t text-xs">
+                <div className={`mt-3 pt-3 border-t text-xs ${theme === 'dark' ? 'border-gray-600' : ''}`}>
                   <p className="truncate"><span className="font-medium">🔗 Previous Hash:</span> {block.previousHash}</p>
                   <p className="truncate"><span className="font-medium">🔐 Hash:</span> {block.hash}</p>
                 </div>
                 
                 {showQRCodes && (
-                  <div className="mt-4 pt-4 border-t flex flex-col items-center">
+                  <div className={`mt-4 pt-4 border-t flex flex-col items-center ${theme === 'dark' ? 'border-gray-600' : ''}`}>
                     <div className="relative">
                       <QRCodeSVG
                         id={`qr-${block.data.productId}`}
@@ -535,6 +539,8 @@ export default function App() {
                         size={128}
                         level="H"
                         includeMargin={true}
+                        bgColor={theme === 'dark' ? '#374151' : '#ffffff'}
+                        fgColor={theme === 'dark' ? '#ffffff' : '#000000'}
                       />
                       {qrLoading[block.data.productId] && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 rounded">
@@ -544,12 +550,12 @@ export default function App() {
                     </div>
                     <button
                       onClick={() => downloadQRCode(block.data)}
-                      className="mt-2 text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1 rounded transition-colors"
+                      className={`mt-2 text-sm px-3 py-1 rounded transition-colors ${theme === 'dark' ? 'bg-indigo-700 hover:bg-indigo-600 text-white' : 'bg-indigo-100 hover:bg-indigo-200 text-indigo-700'}`}
                       disabled={qrLoading[block.data.productId]}
                     >
                       {qrLoading[block.data.productId] ? 'Generating...' : 'Download QR'}
                     </button>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                       Scan to verify product authenticity
                     </p>
                   </div>
@@ -565,19 +571,19 @@ export default function App() {
   const renderEventsTab = () => (
     <div className="space-y-8">
       <form onSubmit={handleAddEvent} className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-700'} mb-4`}>
           Add Event
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
               Product ID
             </label>
             <select
               name="productId"
               value={eventForm.productId}
               onChange={handleEventInputChange}
-              className="border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500"
+              className={`border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
               required
             >
               <option value="">Select Product</option>
@@ -589,14 +595,14 @@ export default function App() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
               Event Type
             </label>
             <select
               name="eventType"
               value={eventForm.eventType}
               onChange={handleEventInputChange}
-              className="border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500"
+              className={`border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
               required
             >
               <option value="Production Start">Production Start</option>
@@ -609,7 +615,7 @@ export default function App() {
           </div>
           <div className="sm:col-span-3 grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
                 Key (e.g., temperature)
               </label>
               <input
@@ -618,11 +624,11 @@ export default function App() {
                 placeholder="e.g., temperature"
                 value={eventForm.key}
                 onChange={handleEventInputChange}
-                className="border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500"
+                className={`border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-1`}>
                 Value (e.g., 25°C)
               </label>
               <input
@@ -631,7 +637,7 @@ export default function App() {
                 placeholder="e.g., 25°C"
                 value={eventForm.value}
                 onChange={handleEventInputChange}
-                className="border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500"
+                className={`border rounded-lg p-3 w-full shadow-sm focus:ring-2 focus:ring-indigo-500 ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'}`}
               />
             </div>
           </div>
@@ -661,7 +667,7 @@ export default function App() {
       </form>
 
       <section>
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-700'} mb-4`}>
           Event Timeline
         </h2>
         
@@ -670,34 +676,34 @@ export default function App() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
         ) : events.length === 0 ? (
-          <div className="bg-gray-50 p-8 rounded-lg text-center">
-            <p className="text-gray-500">No events recorded yet</p>
+          <div className={`p-8 rounded-lg text-center ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>No events recorded yet</p>
           </div>
         ) : (
-          <div className="bg-gray-50 p-4 rounded-lg shadow-inner max-h-96 overflow-y-auto">
+          <div className={`p-4 rounded-lg shadow-inner max-h-96 overflow-y-auto ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}`}>
             <div className="space-y-4">
               {events.map((event, index) => (
-                <div key={index} className="p-4 border rounded-md bg-white shadow-sm">
+                <div key={index} className={`p-4 border rounded-md shadow-sm ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white'}`}>
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-medium text-gray-900">
+                      <p className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                         {event.productId} - {event.eventType}
                       </p>
-                      <p className="text-gray-600 text-sm">
+                      <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                         {new Date(event.timestamp).toLocaleString()}
                       </p>
                       {event.key && event.value && (
-                        <p className="text-gray-600 mt-1">
+                        <p className={`mt-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                           <span className="font-medium">{event.key}:</span> {event.value}
                         </p>
                       )}
                     </div>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${theme === 'dark' ? 'bg-indigo-800 text-indigo-100' : 'bg-indigo-100 text-indigo-800'}`}>
                       {event.eventType}
                     </span>
                   </div>
                   {event.walletAddress && (
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className={`text-xs mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                       Recorded by: {`${event.walletAddress.slice(0, 6)}...${event.walletAddress.slice(-4)}`}
                     </p>
                   )}
@@ -709,25 +715,25 @@ export default function App() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-700'} mb-4`}>
           Condition Monitoring
         </h2>
-        <div className="bg-gray-50 p-4 rounded-lg shadow-inner overflow-x-auto">
+        <div className={`p-4 rounded-lg shadow-inner overflow-x-auto ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}`}>
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-100">
+            <thead className={theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}>
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Temp (°C)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Humidity (%)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Shock (g)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Light (lux)</th>
-                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                <th className={`px-4 py-2 text-left text-xs font-medium uppercase tracking-wider ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Product</th>
+                <th className={`px-4 py-2 text-left text-xs font-medium uppercase tracking-wider ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Temp (°C)</th>
+                <th className={`px-4 py-2 text-left text-xs font-medium uppercase tracking-wider ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Humidity (%)</th>
+                <th className={`px-4 py-2 text-left text-xs font-medium uppercase tracking-wider ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Shock (g)</th>
+                <th className={`px-4 py-2 text-left text-xs font-medium uppercase tracking-wider ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Light (lux)</th>
+                <th className={`px-4 py-2 text-left text-xs font-medium uppercase tracking-wider ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Location</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className={`divide-y ${theme === 'dark' ? 'divide-gray-700 bg-gray-800' : 'divide-gray-200 bg-white'}`}>
               {chain.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-4 py-4 text-center text-gray-500">No products available</td>
+                  <td colSpan="6" className={`px-4 py-4 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>No products available</td>
                 </tr>
               ) : (
                 chain.map((block) => {
@@ -740,22 +746,22 @@ export default function App() {
 
                   return (
                     <tr key={block.data.productId}>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className={`px-4 py-2 whitespace-nowrap text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                         {block.data.productId}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className={`px-4 py-2 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                         {tempEvent?.value || 'N/A'}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className={`px-4 py-2 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                         {humidityEvent?.value || 'N/A'}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className={`px-4 py-2 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                         {shockEvent?.value || 'N/A'}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className={`px-4 py-2 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                         {lightEvent?.value || 'N/A'}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className={`px-4 py-2 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>
                         {locationEvent?.value || 'N/A'}
                       </td>
                     </tr>
@@ -772,62 +778,62 @@ export default function App() {
   const renderAnalyticsTab = () => (
     <div className="space-y-8">
       <section>
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+        <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'} mb-6`}>
           📊 Analytics Dashboard
         </h2>
-        <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+        <div className={`p-6 rounded-lg shadow-inner ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}`}>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <h3 className="text-sm font-medium text-gray-500">Total Products</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 hover:shadow-md' : 'bg-white border-gray-200 hover:shadow-md'} transition-shadow`}>
+              <h3 className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Total Products</h3>
               <p className="text-3xl font-semibold text-indigo-600">{analyticsData.totalProducts}</p>
-              <p className="text-xs text-gray-500 mt-1">Tracked in blockchain</p>
+              <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Tracked in blockchain</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <h3 className="text-sm font-medium text-gray-500">Total Events</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 hover:shadow-md' : 'bg-white border-gray-200 hover:shadow-md'} transition-shadow`}>
+              <h3 className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Total Events</h3>
               <p className="text-3xl font-semibold text-indigo-600">{analyticsData.totalEvents}</p>
-              <p className="text-xs text-gray-500 mt-1">Across all products</p>
+              <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Across all products</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <h3 className="text-sm font-medium text-gray-500">Avg Events/Product</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 hover:shadow-md' : 'bg-white border-gray-200 hover:shadow-md'} transition-shadow`}>
+              <h3 className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Avg Events/Product</h3>
               <p className="text-3xl font-semibold text-indigo-600">{analyticsData.avgEventsPerProduct}</p>
-              <p className="text-xs text-gray-500 mt-1">Detailed tracking</p>
+              <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Detailed tracking</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <h3 className="text-sm font-medium text-gray-500">Active Alerts</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 hover:shadow-md' : 'bg-white border-gray-200 hover:shadow-md'} transition-shadow`}>
+              <h3 className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Active Alerts</h3>
               <p className="text-3xl font-semibold text-indigo-600">{analyticsData.activeAlerts}</p>
-              <p className="text-xs text-gray-500 mt-1">Requiring attention</p>
+              <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Requiring attention</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-medium text-gray-700 mb-3">Event Type Distribution</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+              <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-3`}>Event Type Distribution</h3>
               <div className="space-y-2">
                 {Object.entries(analyticsData.eventTypeDistribution).map(([type, count]) => (
                   <div key={type} className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className="w-3 h-3 rounded-full bg-indigo-500 mr-2"></div>
-                      <span className="text-sm font-medium text-gray-700">{type}</span>
+                      <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{type}</span>
                     </div>
-                    <span className="text-sm font-semibold text-gray-900">{count}</span>
+                    <span className={`text-sm font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{count}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-medium text-gray-700 mb-3">Temperature Statistics</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+              <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-3`}>Temperature Statistics</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Min</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Min</p>
                   <p className="text-xl font-semibold text-blue-600">{analyticsData.temperatureStats.min}°C</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Average</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Average</p>
                   <p className="text-xl font-semibold text-blue-600">{analyticsData.temperatureStats.avg}°C</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Max</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Max</p>
                   <p className="text-xl font-semibold text-blue-600">{analyticsData.temperatureStats.max}°C</p>
                 </div>
               </div>
@@ -835,17 +841,17 @@ export default function App() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-medium text-gray-700 mb-3">Shipment Performance</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+              <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-3`}>Shipment Performance</h3>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-500">Total Shipments</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Total Shipments</p>
                   <p className="text-xl font-semibold text-indigo-600">
                     {events.filter(e => e.eventType === 'Shipment').length}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Avg Shipment Duration</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Avg Shipment Duration</p>
                   <p className="text-xl font-semibold text-indigo-600">
                     {analyticsData.avgShipmentDuration} days
                   </p>
@@ -853,17 +859,17 @@ export default function App() {
               </div>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-medium text-gray-700 mb-3">Product Locations</h3>
+            <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
+              <h3 className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-3`}>Product Locations</h3>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {Object.entries(analyticsData.productLocations).map(([productId, location]) => (
                   <div key={productId} className="flex justify-between text-sm">
-                    <span className="font-medium text-gray-700">{productId}</span>
-                    <span className="text-gray-500">{location || 'Unknown'}</span>
+                    <span className={`font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{productId}</span>
+                    <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>{location || 'Unknown'}</span>
                   </div>
                 ))}
                 {Object.keys(analyticsData.productLocations).length === 0 && (
-                  <p className="text-gray-500 text-sm">No location data available</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>No location data available</p>
                 )}
               </div>
             </div>
@@ -872,12 +878,12 @@ export default function App() {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-700'} mb-4`}>
           Recent Activity Timeline
         </h2>
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className={`p-4 rounded-lg shadow-sm border ${theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
           {analyticsData.recentEvents.length === 0 ? (
-            <p className="text-gray-500">No recent activity</p>
+            <p className={theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}>No recent activity</p>
           ) : (
             <div className="space-y-4">
               {analyticsData.recentEvents.map((event, index) => (
@@ -886,14 +892,14 @@ export default function App() {
                     <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
                   </div>
                   <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                       {event.productId} - {event.eventType}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                       {new Date(event.timestamp).toLocaleString()}
                     </p>
                     {event.key && event.value && (
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                         <span className="font-medium">{event.key}:</span> {event.value}
                       </p>
                     )}
@@ -908,7 +914,7 @@ export default function App() {
   );
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-6 font-sans">
+    <main className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-800'} p-6 font-sans`}>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -919,33 +925,46 @@ export default function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme={theme}
       />
       
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className={`max-w-6xl mx-auto rounded-xl shadow-lg overflow-hidden transition-colors duration-300 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-indigo-700 flex items-center">
+            <h1 className={`text-3xl font-bold flex items-center ${theme === 'dark' ? 'text-indigo-400' : 'text-indigo-700'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
               </svg>
               Supply Chain Tracker
             </h1>
-            <WalletConnect 
-              account={account} 
-              onConnect={handleConnect}
-              isLoading={isLoading}
-            />
+            <div className="flex items-center gap-4">
+              <WalletConnect 
+                account={account} 
+                onConnect={handleConnect}
+                isLoading={isLoading}
+              />
+              <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-full ${theme === 'dark' ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                aria-label="Toggle dark mode"
+              >
+                {theme === 'dark' ? '☀️' : '🌙'}
+              </button>
+            </div>
           </div>
 
-          <div className="mb-6 border-b border-gray-200">
+          <div className={`mb-6 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab("products")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "products"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? theme === 'dark' 
+                      ? "border-indigo-400 text-indigo-300" 
+                      : "border-indigo-500 text-indigo-600"
+                    : theme === 'dark'
+                      ? "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-500"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 Products
@@ -954,8 +973,12 @@ export default function App() {
                 onClick={() => setActiveTab("events")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "events"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? theme === 'dark' 
+                      ? "border-indigo-400 text-indigo-300" 
+                      : "border-indigo-500 text-indigo-600"
+                    : theme === 'dark'
+                      ? "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-500"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 Events
@@ -964,8 +987,12 @@ export default function App() {
                 onClick={() => setActiveTab("analytics")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "analytics"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? theme === 'dark' 
+                      ? "border-indigo-400 text-indigo-300" 
+                      : "border-indigo-500 text-indigo-600"
+                    : theme === 'dark'
+                      ? "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-500"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 Analytics
@@ -974,8 +1001,12 @@ export default function App() {
                 onClick={() => setActiveTab("escrow")}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "escrow"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? theme === 'dark' 
+                      ? "border-indigo-400 text-indigo-300" 
+                      : "border-indigo-500 text-indigo-600"
+                    : theme === 'dark'
+                      ? "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-500"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
                 Escrow
@@ -989,7 +1020,7 @@ export default function App() {
               {activeTab === "events" && renderEventsTab()}
               {activeTab === "analytics" && renderAnalyticsTab()}
               {activeTab === "escrow" && (
-                <div className="bg-white p-6 rounded-lg shadow-sm">
+                <div className={`p-6 rounded-lg shadow-sm ${theme === 'dark' ? 'bg-gray-700' : 'bg-white'}`}>
                   <EscrowInterface 
                     account={account}
                     onSuccess={() => {

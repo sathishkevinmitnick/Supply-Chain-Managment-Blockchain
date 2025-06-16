@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { BrowserProvider } from "ethers";
 
 const WalletConnect = () => {
   const [account, setAccount] = useState("");
@@ -7,10 +7,10 @@ const WalletConnect = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Initialize provider instance
+  // Initialize provider instance (ethers v6)
   const getProvider = () => {
     if (typeof window !== 'undefined' && window.ethereum) {
-      return new ethers.providers.Web3Provider(window.ethereum);
+      return new BrowserProvider(window.ethereum);
     }
     return null;
   };
@@ -23,7 +23,7 @@ const WalletConnect = () => {
         return;
       }
 
-      const accounts = await provider.listAccounts();
+      const accounts = await provider.send("eth_accounts", []);
       if (accounts.length > 0) {
         const address = accounts[0];
         setAccount(address);
@@ -34,6 +34,7 @@ const WalletConnect = () => {
       }
     } catch (err) {
       console.error("Error checking wallet connection:", err);
+      setError(err.message);
     }
   };
 
@@ -79,9 +80,8 @@ const WalletConnect = () => {
       checkIfWalletIsConnected();
     }
 
-    // Set up event listeners
-    const provider = getProvider();
-    if (provider?.provider?.on) {
+    // Set up event listeners (updated for ethers v6)
+    if (window.ethereum) {
       const handleAccountsChanged = (accounts) => {
         if (accounts.length === 0) {
           handleDisconnect();
@@ -95,12 +95,12 @@ const WalletConnect = () => {
         window.location.reload();
       };
 
-      provider.provider.on('accountsChanged', handleAccountsChanged);
-      provider.provider.on('chainChanged', handleChainChanged);
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
 
       return () => {
-        provider.provider.removeListener('accountsChanged', handleAccountsChanged);
-        provider.provider.removeListener('chainChanged', handleChainChanged);
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
       };
     }
   }, []);
@@ -116,11 +116,11 @@ const WalletConnect = () => {
       <div className="flex items-center gap-3">
         {account && (
           <div className="flex items-center gap-2">
-            <span className="hidden md:inline text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
+            <span className="hidden md:inline text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
               {network}
             </span>
             <div 
-              className="flex items-center gap-1 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+              className="flex items-center gap-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded"
               onClick={copyToClipboard}
               title="Click to copy"
             >

@@ -1,113 +1,105 @@
 import { useState } from 'react';
-import { ethers } from "ethers";
-import { toast } from "react-toastify";
-import escrowABI from "../contracts/SupplyChainEscrow.json"; // Import ABI
+import { BrowserProvider, Contract } from 'ethers';
+import { toast } from 'react-toastify';
+import escrowABI from '../contracts/SupplyChainEscrow.json';
 
 export default function EscrowActions({ account, onSuccess }) {
   const [escrowContract, setEscrowContract] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const contractAddress = import.meta.env.VITE_ESCROW_ADDRESS; // From .env
+  const contractAddress = import.meta.env.VITE_ESCROW_ADDRESS;
+  const hardhatChainId = import.meta.env.VITE_LOCAL_CHAIN_ID || "31337";
 
-  // 1. Initialize Contract Connection
+  const switchToHardhatNetwork = async (provider) => {
+    try {
+      await provider.send("wallet_switchEthereumChain", [
+        { chainId: `0x${parseInt(hardhatChainId).toString(16)}` }
+      ]);
+      return true;
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask
+      if (switchError.code === 4902) {
+        try {
+          await provider.send("wallet_addEthereumChain", [
+            {
+              chainId: `0x${parseInt(hardhatChainId).toString(16)}`,
+              chainName: "Hardhat Local Network",
+              nativeCurrency: {
+                name: "Ether",
+                symbol: "ETH",
+                decimals: 18
+              },
+              rpcUrls: ["http://127.0.0.1:8545"],
+              blockExplorerUrls: []
+            }
+          ]);
+          return true;
+        } catch (addError) {
+          console.error("Error adding Hardhat network:", addError);
+          return false;
+        }
+      }
+      console.error("Error switching to Hardhat network:", switchError);
+      return false;
+    }
+  };
+
   const connectContract = async () => {
     try {
       if (!window.ethereum) {
-        throw new Error("MetaMask not installed!");
+        throw new Error("Please install MetaMask!");
       }
 
       if (!account) {
         throw new Error("Please connect wallet first");
       }
 
+      if (!contractAddress) {
+        throw new Error("Contract address not configured");
+      }
+
       setIsLoading(true);
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      toast.info("Connecting to escrow contract...");
+
+      const provider = new BrowserProvider(window.ethereum);
+      const network = await provider.getNetwork();
       
-      // Check if already connected
-      const accounts = await provider.send("eth_requestAccounts", []);
-      if (accounts.length === 0) {
-        throw new Error("No accounts found");
+      // Check if already on Hardhat network
+      if (network.chainId.toString() !== hardhatChainId) {
+        toast.info("Switching to Hardhat network...");
+        const switched = await switchToHardhatNetwork(window.ethereum);
+        if (!switched) {
+          throw new Error(`Please switch to Hardhat network (Chain ID: ${hardhatChainId}) manually`);
+        }
+        // Refresh provider after network switch
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
       const signer = await provider.getSigner();
-      const contract = new ethers.Contract(
+
+      // Create contract instance
+      const contract = new Contract(
         contractAddress,
-        escrowABI.abi, // Use the ABI field from JSON
+        escrowABI.abi,
         signer
       );
 
-      // Verify the contract is correctly connected
+      // Test connection
       try {
-        await contract.buyer(); // Simple read call to verify connection
+        await contract.buyer();
       } catch (err) {
-        throw new Error("Failed to verify contract connection");
+        console.error("Contract test call failed:", err);
+        throw new Error("Failed to connect to contract - check ABI and address");
       }
 
       setEscrowContract(contract);
       toast.success("Escrow contract connected!");
       if (onSuccess) onSuccess();
+      
+      return contract;
     } catch (err) {
       console.error("Contract connection error:", err);
       toast.error(`Connection failed: ${err.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 2. Confirm Delivery Function
-  const confirmDelivery = async () => {
-    if (!escrowContract) {
-      toast.warning("Please connect contract first");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const toastId = toast.loading("Confirming delivery...");
-      
-      const tx = await escrowContract.confirmDelivery();
-      await tx.wait(); // Wait for transaction confirmation
-      
-      toast.update(toastId, {
-        render: "✅ Payment released to seller!",
-        type: "success",
-        isLoading: false,
-        autoClose: 5000
-      });
-      
-      if (onSuccess) onSuccess();
-    } catch (err) {
-      console.error("Delivery confirmation error:", err);
-      toast.error(`❌ Failed: ${err.reason || err.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 3. Request Payout Function
-  const requestPayout = async () => {
-    if (!escrowContract) {
-      toast.warning("Please connect contract first");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const toastId = toast.loading("Requesting payout...");
-      
-      const tx = await escrowContract.requestPayout();
-      await tx.wait();
-      
-      toast.update(toastId, {
-        render: "🕒 Payout requested. Arbitrator will review.",
-        type: "info",
-        isLoading: false,
-        autoClose: 5000
-      });
-      
-      if (onSuccess) onSuccess();
-    } catch (err) {
-      console.error("Payout request error:", err);
-      toast.error(`❌ Failed: ${err.reason || err.message}`);
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -136,28 +128,6 @@ export default function EscrowActions({ account, onSuccess }) {
         </button>
       ) : (
         <div className="space-y-2">
-          <button
-            onClick={confirmDelivery}
-            disabled={isLoading}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium transition-colors
-              ${isLoading 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-green-600 hover:bg-green-700'}`}
-          >
-            {isLoading ? 'Processing...' : 'Confirm Delivery'}
-          </button>
-          
-          <button
-            onClick={requestPayout}
-            disabled={isLoading}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium transition-colors
-              ${isLoading 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-amber-500 hover:bg-amber-600'}`}
-          >
-            {isLoading ? 'Processing...' : 'Request Payout'}
-          </button>
-          
           <div className="pt-2 border-t border-gray-100">
             <p className="text-sm text-gray-500">
               Connected to contract: 
@@ -166,10 +136,7 @@ export default function EscrowActions({ account, onSuccess }) {
               </span>
             </p>
             <p className="text-sm text-gray-500 mt-1">
-              Using account: 
-              <span className="font-mono block truncate">
-                {account}
-              </span>
+              On Hardhat Network (Chain ID: {hardhatChainId})
             </p>
           </div>
         </div>
