@@ -32,4 +32,5 @@ A decentralized supply chain management system leveraging blockchain technology 
 ![image alt](https://github.com/sathishkevinmitnick/Supply-Chain-Managment-Blockchain/blob/7487803e2386e3b56b0a4115d4e1bfd90fcca238/Screenshot%20(306).png)
 ![image alt](https://github.com/sathishkevinmitnick/Supply-Chain-Managment-Blockchain/blob/2d5b8f10aeafb7d95e6222830315ad19dca801a7/Screenshot%20(291).png)
 ![image alt](https://github.com/sathishkevinmitnick/Supply-Chain-Managment-Blockchain/blob/487bdc887a1d14c6ce9c51c37e81f6ee8b18a970/sample-veriffy.jpg)
+![image alt](https://github.com/sathishkevinmitnick/Supply-Chain-Managment-Blockchain/blob/6f46e6ca896f34b644c66bef2abf3e1a4c19245c/sample-2.jpg)
 
